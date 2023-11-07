@@ -2,7 +2,6 @@ from utils import get_load_company_url, create_database, save_data_to_database
 from config import config
 from DB_manager import DBManager
 companies = [1740, 2180, 2748, 78638, 3148, 3529, 749819, 6041, 2227671, 740]
-# companies = [1740]
 def main():
 
     params = config()
