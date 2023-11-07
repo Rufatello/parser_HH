@@ -2,21 +2,21 @@ import psycopg2
 import requests
 
 def get_load_company_url(companies):
-    url_company = []
+    url_company = {}
     full_vakancy = []
     for i in companies:
         response = requests.get(f'https://api.hh.ru/employers/{i}',
                                 params={'per_page': 1, 'only_with_vacancies': True}).json()
-        url_company.append(response['vacancies_url'])
+        url_company[response['vacancies_url']] = response['name']
 
-    for vakancy in url_company:
-        data = requests.get(f'{vakancy}', params={'per_page': 1, 'only_with_salary':True}).json()
-    full_vakancy.append({'name_vakancy': data['items'][0]['name'],
-                         'name_company': data['items'][0]['department']['name'],
-                         'url_vakancy': data['items'][0]['alternate_url'],
-                         'solary_ot': data['items'][0]['salary']['from'],
-                         'solary_do': data['items'][0]['salary']['to']
-    })
+    for vakancy, name_company in url_company.items():
+        data = requests.get(f'{vakancy}', params={'per_page': 10, 'only_with_salary': True}).json()
+        for item in data['items']:
+            full_vakancy.append({'name_vacancy': item['name'],
+                                 'url_vacancy': item['alternate_url'],
+                                 'salary_from': item['salary']['from'],
+                                 'salary_to': item['salary']['to']
+                                 })
     return full_vakancy
 
 
